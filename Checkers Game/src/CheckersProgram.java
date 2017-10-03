@@ -2,12 +2,17 @@ import java.util.*;
 import java.io.*;
 public class CheckersProgram
 	{
+		public static boolean kill = false;
 		public static int blackTrust=0;
 		public static int redTrust=0;
 		public static int xChosen;
 		public static int yChosen;
 		public static int xNew;
 		public static int yNew;
+		public static int killxNew;
+		public static int killyNew;
+		public static int deathX;
+		public static int deathY;
 		public static void main(String[] args)
 			{
 				int board[][] = new int[8][8];
@@ -102,8 +107,16 @@ public class CheckersProgram
 			}
 		public static void registerPlacement(ArrayList<BlackPieces> b, ArrayList<RedPieces> a, int map[][])
 			{	
+				if(kill == false)
+					{
 						map[xNew][yNew] = map[xChosen][yChosen];
-						map[xChosen][yChosen]=1;
+					}
+				else
+					{
+						map[killxNew][killyNew] = map[xChosen][yChosen];
+						map[xNew][yNew] = 1;
+					}
+					map[xChosen][yChosen]=1;
 			}
 		public static void printBoard(int map[][])
 			{
@@ -180,6 +193,7 @@ public class CheckersProgram
 			}
 		public static void blackMove(ArrayList<BlackPieces> b, ArrayList<RedPieces> a)
 			{
+				kill = false;
 				System.out.println("Black Move.");
 				Scanner in = new Scanner(System.in);
 				System.out.println("Please select your piece.");
@@ -243,11 +257,38 @@ public class CheckersProgram
 											{
 												if(xNew == a.get(pieces).getxPos() && yNew == a.get(pieces).getyPos())
 													{
-														a.remove(pieces);
+														int jumpX = xNew - xChosen;
+														int jumpY = yNew - yChosen;
+														killxNew = xNew + jumpX;
+														killyNew = yNew + jumpY;
+														boolean noPieceBehindKill = true;
+														for(int runner = 0; runner<a.size(); runner++)
+															{
+																if(killxNew == a.get(runner).getxPos() && killyNew == a.get(runner).getyPos())
+																	{
+																		noPieceBehindKill = false;
+																		noPieceBehindKill=false;
+																		kill = false;
+																		System.out.println("There is a piece behind that!");
+																		System.out.println("You have attempted to cheat the system! You are DISQUALIFIED!");
+																		System.out.println("Black Wins!");
+																		System.exit(0);
+																	}
+															}
+														if(noPieceBehindKill = true)
+															{
+																a.remove(pieces);
+																b.get(rememberPiece).setxPos(b.get(rememberPiece).getxPos() + jumpX);
+																b.get(rememberPiece).setyPos(b.get(rememberPiece).getyPos() + jumpY);
+																kill = true;
+															}
 													}
 											}
-										b.get(rememberPiece).setxPos(xNew);
-										b.get(rememberPiece).setyPos(yNew);
+										if(kill == false)
+											{
+												b.get(rememberPiece).setxPos(xNew);
+												b.get(rememberPiece).setyPos(yNew);
+											}
 									}
 							}
 						else
@@ -258,6 +299,7 @@ public class CheckersProgram
 					}
 		public static void redMove(ArrayList<RedPieces> b, ArrayList<BlackPieces> a)
 			{
+				kill = false;
 				System.out.println("Red Move.");
 				Scanner in = new Scanner(System.in);
 				System.out.println("Please select your piece.");
@@ -320,11 +362,38 @@ public class CheckersProgram
 											{
 												if(xNew == a.get(pieces).getxPos() && yNew == a.get(pieces).getyPos())
 													{
-														a.remove(pieces);
+														int jumpX = xNew - xChosen;
+														int jumpY = yNew - yChosen;
+														killxNew = xNew + jumpX;
+														killyNew = yNew + jumpY;
+														boolean noPieceBehindKill = true;
+														for(int runner = 0; runner<a.size(); runner++)
+															{
+																if(killxNew == a.get(runner).getxPos() && killyNew == a.get(runner).getyPos())
+																	{
+																		noPieceBehindKill = false;
+																		noPieceBehindKill=false;
+																		kill = false;
+																		System.out.println("There is a piece behind that!");
+																		System.out.println("You have attempted to cheat the system! You are DISQUALIFIED!");
+																		System.out.println("Black Wins!");
+																		System.exit(0);
+																	}
+															}
+														if(noPieceBehindKill = true)
+															{
+																a.remove(pieces);
+																b.get(rememberPiece).setxPos(b.get(rememberPiece).getxPos() + jumpX);
+																b.get(rememberPiece).setyPos(b.get(rememberPiece).getyPos() + jumpY);
+																kill = true;
+															}
 													}
 											}
-										b.get(rememberPiece).setxPos(xNew);
-										b.get(rememberPiece).setyPos(yNew);
+										if(kill==false)
+											{
+												b.get(rememberPiece).setxPos(xNew);
+												b.get(rememberPiece).setyPos(yNew);
+											}
 									}
 							}
 						else
