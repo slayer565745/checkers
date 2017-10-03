@@ -2,6 +2,8 @@ import java.util.*;
 import java.io.*;
 public class CheckersProgram
 	{
+		public static int blackTrust=0;
+		public static int redTrust=0;
 		public static int xChosen;
 		public static int yChosen;
 		public static int xNew;
@@ -18,17 +20,32 @@ public class CheckersProgram
 				placeBlackPieces(blackPieces);
 				placeRedPieces(redPieces);
 				printBoard(board);
-				//while(redAlive && blackAlive)
+				int counter = 0;
+				while(redAlive && blackAlive)
 					{
-						blackMove(blackPieces, redPieces);
-						registerPlacement(blackPieces, redPieces, board);
-						redMove(redPieces, blackPieces);
-						registerPlacement(blackPieces, redPieces, board);
+						if(counter%2==0)
+						{
+							blackMove(blackPieces, redPieces);
+							registerPlacement(blackPieces, redPieces, board);
+						}
+						else
+						{
+							redMove(redPieces, blackPieces);
+							registerPlacement(blackPieces, redPieces, board);
+						}
 						printBoard(board);
+						counter++;
 					}
 			}
 		public static void printInstructions()
 		{
+			System.out.println("To select a piece put the letter first then the number such as 'a1'.");
+			System.out.println("If you make it to the other side, your piece becomes a king and can move backwords.");
+			System.out.println("");
+			System.out.println("ANY ATTEMPT TO CHEAT WILL RESULT IN AN IMMEDIATE DISQUALIFICATION!");
+			System.out.println("This doesn't include attempting to place your own pieces on top of each other or on the dash marks.");
+			System.out.println("However, three attempts at this will result in a DISQUALIFICATION!");
+			System.out.println("");
 			
 		}
 		public static void newGame(int map[][])
@@ -136,7 +153,12 @@ public class CheckersProgram
 								}
 							else
 								{
-								if(map[row][column]==1)
+								if(map[row][column]==1 && (Math.abs(row - column)%2==0))
+									{
+										System.out.print("-");
+										System.out.print(" ");
+									}
+								else if(map[row][column]==1 && (Math.abs(row - column)%2==1))
 									{
 										System.out.print(" ");
 										System.out.print(" ");
@@ -158,6 +180,7 @@ public class CheckersProgram
 			}
 		public static void blackMove(ArrayList<BlackPieces> b, ArrayList<RedPieces> a)
 			{
+				System.out.println("Black Move.");
 				Scanner in = new Scanner(System.in);
 				System.out.println("Please select your piece.");
 				String piece = in.nextLine();
@@ -188,6 +211,13 @@ public class CheckersProgram
 						int tester = (xNew - yNew);
 						tester = Math.abs(tester);
 						tester = tester%2;
+						boolean legal = true;
+						if(Math.abs(xNew-xChosen)>1 || yNew < yChosen && b.get(rememberPiece).isKing()==false || Math.abs(yNew - yChosen)>1)
+						{
+							System.out.println("That move is illegal. You have been DISQUALIFIED!.");
+							System.out.println("Red Wins!");
+							System.exit(0);
+						}
 						if(tester != 0)
 							{
 								boolean blackPieces = true;
@@ -197,10 +227,17 @@ public class CheckersProgram
 											{
 												blackPieces = false;
 												System.out.println("There is already a piece there. Please move again.");
+												blackTrust++;
+												if(blackTrust==3)
+												{
+													System.out.println("You have attempted to cheat the system too many times!");
+													System.out.println("Red Wins!");
+													System.exit(0);
+												}
 												blackMove(b, a);
 											}
 									}
-								if(blackPieces == true)
+								if(blackPieces == true && legal == true)
 									{
 										for(int pieces = 0; pieces<a.size(); pieces++)
 											{
@@ -261,9 +298,22 @@ public class CheckersProgram
 											{
 												blackPieces = false;
 												System.out.println("There is already a piece there. Please move again.");
+												redTrust++;
+												if(redTrust==3)
+												{
+													System.out.println("You have attempted to cheat the system too many times!");
+													System.out.println("Black Wins!");
+													System.exit(0);
+												}
 												redMove(b, a);
 											}
 									}
+								if(Math.abs(xNew-xChosen)>1 || yNew > yChosen && b.get(rememberPiece).isKing()==false || Math.abs(yNew - yChosen)>1)
+								{
+									System.out.println("That move is illegal. You have been DISQUALIFIED!.");
+									System.out.println("Black WINS!");
+									System.exit(0);
+								}
 								if(blackPieces == true)
 									{
 										for(int pieces = 0; pieces<a.size(); pieces++)
