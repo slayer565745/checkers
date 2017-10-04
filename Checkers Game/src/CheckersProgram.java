@@ -210,6 +210,10 @@ public class CheckersProgram
 										rememberPiece = pieces;
 										run = true;
 									}
+								if(b.get(pieces).getyPos()>6)
+									{
+										b.get(pieces).setKing(true);
+									}
 							}
 				if(run == false)
 					{
@@ -315,6 +319,10 @@ public class CheckersProgram
 									{
 										rememberPiece = pieces;
 										run = true;
+									}
+								if(b.get(pieces).getyPos()>6)
+									{
+										b.get(pieces).setKing(true);
 									}
 							}
 				if(run == false)
